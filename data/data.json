@@ -1,0 +1,18 @@
+{
+    "emulator_current": 0,
+    "Emulator_options_cn": [
+        "\u96f7\u7535",
+        "\u591c\u795e",
+        "\u900d\u9059"
+    ],
+    "Emulator_options_zh": [
+        "\u96f7\u96fb",
+        "\u591c\u795e",
+        "\u9059\u9059"
+    ],
+    "Emulator_options_en": [
+        "ldplayer",
+        "nox",
+        "memu"
+    ]
+}
