@@ -4,6 +4,7 @@ from modules import table, json_utils
 import os
 from src import player
 
+
 def create_ui_components(parent):
     parent.em_data = json_utils.read_json(os.path.join(parent.data_path, "data"))  # 模擬器相關數據
 
@@ -34,18 +35,18 @@ def create_ui_components(parent):
     components['bet_self'] = tk.Entry(parent.window)
     components['bs'] = tk.Label(parent.window, text='自訂組數:')
     components['bet_self'].insert(0, parent.account[1].strip())
-    components['bet_self'].place(x=100, y=150)  # 示例位置
-    components['bs'].place(x=200, y=150)  # 示例位置
+    components['bet_self'].place(x=238, y=10, width=120, height=23)  # 示例位置
+    components['bs'].place(x=180, y=10)  # 示例位置
 
     components['x2_var'] = tk.IntVar()
     components['c1'] = tk.Checkbutton(parent.window, text='X2', variable=components['x2_var'], onvalue=1, offvalue=0)
     components['x2_var'].set(parent.account[5])
-    components['c1'].place(x=100, y=200)  # 示例位置
+    components['c1'].place(x=138, y=10)  # 示例位置
 
     entries_labels = [
-        ('c_error', 'crc', '連錯換單:', '3', 100, 250, 200, 250),
-        ('s_error', 'src', '二次換單:', '2', 100, 300, 200, 300),
-        ('profit', 'pro_p', '%', '20', 100, 350, 200, 350),
+        ('c_error', 'crc', '連錯換單:', '3', 418, 10, 358, 10),
+        ('s_error', 'src', '二次換單:', '2', 418, 40, 358, 40),
+        ('profit', 'pro_p', '%', '20', 478, 10, 508, 10),
         ('loss', 'loss_p', '%', '20', 100, 400, 200, 400),
         ('bet_history', 'bh', '歷史筆數:', '24', 100, 450, 200, 450),
         ('bet_count', 'bc', '下單組數(-+):', '5', 100, 500, 200, 500),
@@ -67,8 +68,13 @@ def create_ui_components(parent):
         components[entry] = tk.Entry(parent.window)
         components[label_var] = tk.Label(parent.window, text=label_text)
         components[entry].insert(0, default_value)
-        components[entry].place(x=x_entry, y=y_entry)
+
+        if entry == 'bet_self':
+            components[entry].place(x=x_entry, y=y_entry, width=120, height=23)
+        else:
+            components[entry].place(x=x_entry, y=y_entry, width=30, height=23)
         components[label_var].place(x=x_label, y=y_label)
+
 
     be = ['', '1', '2', '3', '4']
     components['be1'] = tk.Label(parent.window, text='模擬器:')
