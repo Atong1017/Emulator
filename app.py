@@ -9,7 +9,7 @@ from modules.db_utils import MSSQL, read_txt
 
 class Emulate:
     def __init__(self, window):
-        self.file_path = os.path.realpath(__file__)
+        self.file_path = os.path.realpath(__file__)  # 當前python執行檔的絕對路徑
         self.file_path = os.path.dirname(self.file_path)
         self.png_path = os.path.join(self.file_path, "png")
         self.data_path = os.path.join(self.file_path, "data")
