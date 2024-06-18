@@ -1,19 +1,35 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from modules import table
+from modules import table, json_utils
+import os
+from src import player
 
 def create_ui_components(parent):
+    parent.em_data = json_utils.read_json(os.path.join(parent.data_path, "data"))  # 模擬器相關數據
+
+    eo = parent.em_data["Emulator_options_cn"]  # 選擇語言
+
+    parent.select_player = ttk.Combobox(parent.window, value=eo, width=5, height=5, state='readonly')
+    parent.select_player.current(parent.em_data['emulator_current'])
+
+    parent.adb_path = player.find_dir(parent.select_player.get())
+    os.chdir(parent.adb_path)
+
+    parent.select_player.bind("<<ComboboxSelected>>", parent.updata_player)
+
+    parent.select_player.place(x=300, y=0)
+
     components = {}
 
     mt = ['歷史筆數', '自訂組數', 'Top', '號碼-+', '交集']
     components['bet_type'] = ttk.Combobox(parent.window, value=mt, width=8, state='readonly')
     components['bet_type'].current(0)
-    components['bet_type'].place(x=100, y=50)  # 示例位置
+    components['bet_type'].place(x=10, y=10)  # 示例位置
 
     components['up_var'] = tk.IntVar()
     components['up_checkbutton'] = tk.Checkbutton(parent.window, text='上升', variable=components['up_var'], onvalue=1, offvalue=0)
     components['up_var'].set(1)
-    components['up_checkbutton'].place(x=100, y=100)  # 示例位置
+    components['up_checkbutton'].place(x=90, y=10)  # 示例位置
 
     components['bet_self'] = tk.Entry(parent.window)
     components['bs'] = tk.Label(parent.window, text='自訂組數:')
@@ -62,17 +78,17 @@ def create_ui_components(parent):
     components['bet_emulator'].place(x=600, y=400)  # 示例位置
 
     button_commands = {
-        '新增任務': 'add_task',
-        '刪除任務': 'delete_task',
-        '更新任務': 'update_task',
-        '關閉adb': 'close_adb',
-        '執行': 'start_bet_button',
-        '測試': 'test1'
+        '新增任務': ['add_task', 548, 10],
+        '刪除任務': ['delete_task', 548, 40],
+        '更新任務': ['update_task', 548, 70],
+        '關閉adb': ['close_adb', 548, 100],
+        '執行': ['start_bet_button', 618, 100],
+        '測試': ['test1', 618, 10]
     }
 
     for button_name, command_name in button_commands.items():
         components[button_name] = tk.Button(parent.window, text=button_name.capitalize(),
-                                            command=lambda cmd=command_name: getattr(table, cmd)(parent))
-        components[button_name].place(x=10, y=100 + 50 * list(button_commands.keys()).index(button_name))  # 示例位置
+                                            command=lambda cmd=command_name[0]: getattr(table, cmd)(parent))
+        components[button_name].place(x=command_name[1], y=command_name[2])  # 示例位置
 
-    return components
+    return components, parent.select_player
