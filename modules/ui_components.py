@@ -6,20 +6,6 @@ from src import player
 
 
 def create_ui_components(parent):
-    parent.em_data = json_utils.read_json(os.path.join(parent.data_path, "data"))  # 模擬器相關數據
-
-    eo = parent.em_data["Emulator_options_cn"]  # 選擇語言
-
-    parent.select_player = ttk.Combobox(parent.window, value=eo, width=5, height=5, state='readonly')
-    parent.select_player.current(parent.em_data['emulator_current'])
-
-    parent.adb_path = player.find_dir(parent.select_player.get())
-    os.chdir(parent.adb_path)
-
-    parent.select_player.bind("<<ComboboxSelected>>", parent.updata_player)
-
-    parent.select_player.place(x=300, y=0)
-
     components = {}
 
     mt = ['歷史筆數', '自訂組數', 'Top', '號碼-+', '交集']
@@ -44,44 +30,61 @@ def create_ui_components(parent):
     components['c1'].place(x=138, y=10)  # 示例位置
 
     entries_labels = [
-        ('c_error', 'crc', '連錯換單:', '3', 418, 10, 358, 10),
-        ('s_error', 'src', '二次換單:', '2', 418, 40, 358, 40),
-        ('profit', 'pro_p', '%', '20', 478, 10, 508, 10),
-        ('loss', 'loss_p', '%', '20', 100, 400, 200, 400),
-        ('bet_history', 'bh', '歷史筆數:', '24', 100, 450, 200, 450),
-        ('bet_count', 'bc', '下單組數(-+):', '5', 100, 500, 200, 500),
-        ('bet_time', 'bt', '次後不再下注', '2', 100, 550, 200, 550),
-        ('start_amount', 'sa', '起始金額:', '10000', 300, 250, 400, 250),
-        ('chips', 'cp', '每單籌碼:', '0.1', 300, 300, 400, 300),
-        ('changerank', 'cr', '更新排名:', '1', 300, 350, 400, 350),
-        ('hsrank', '', '', '100', 300, 400, 400, 400),
-        ('hs_deduct', 'hsd', '內無則扣除:', '11', 300, 450, 400, 450),
-        ('first_reduce', '', '', '3', 300, 500, 400, 500),
-        ('second_hsd', '', '第二次無則扣除:', '0', 300, 550, 400, 550),
-        ('second_reduce', '', '', '0', 300, 600, 400, 600),
-        ('up_profit', '', '上升獲利:', '50', 500, 250, 600, 250),
-        ('up_front', '', '往前:', '19', 500, 300, 600, 300),
-        ('up_later', '', '往後:', '24', 500, 350, 600, 350)
+        ('c_error', '3', 'crc', '連錯換單:', 418, 10, 358, 10),
+        ('s_error', '2', 'src', '二次換單:', 418, 40, 358, 40),
+        ('profit', '20', 'pro_p', '%', 478, 10, 508, 10),
+        ('loss', '20', 'loss_p', '%', 478, 40, 508, 40),
+        ('bet_history', '24', 'bh', '歷史筆數:', 72, 40, 10, 40),
+        ('bet_count', '5', 'bc', '下單組數(-+):', 192, 40, 110, 40),
+        ('bet_time', '2', 'bt', '次後不再下注', 232, 40, 268, 40),
+        ('start_amount', '10000', 'sa', '起始金額:', 72, 70, 10, 70),
+        ('chips', '0.1', 'cp', '每單籌碼:', 182, 70, 120, 70),
+        ('changerank', '1', 'cr', '更新排名:', 462, 70, 400, 70),
+        ('hsrank', '100', '', '', 512, 70, 0, 0),
+        ('hs_deduct', '11', 'hsd', '內無則扣除:', 10, 100, 40, 100),
+        ('first_reduce', '3', '', '', 110, 100, 0, 0),
+        ('second_hsd', '0', 'second_reduce', '第二次無則扣除:', 235, 100, 140, 100),
+        ('up_profit', '50', 'up_profit_label', '上升獲利:', 325, 100, 265, 100),
+        ('up_front', '19', 'up_front_label', '往前:', 390, 100, 355, 100),
+        ('up_later', '24', 'up_later_label', '往後:', 455, 100, 420, 100)
     ]
 
-    for entry, label_var, label_text, default_value, x_entry, y_entry, x_label, y_label in entries_labels:
+    for entry, default_value, label_var, label_text, x_entry, y_entry, x_label, y_label in entries_labels:
         components[entry] = tk.Entry(parent.window)
         components[label_var] = tk.Label(parent.window, text=label_text)
         components[entry].insert(0, default_value)
 
         if entry == 'bet_self':
             components[entry].place(x=x_entry, y=y_entry, width=120, height=23)
+        elif entry in ['start_amount', 'chips']:
+            components[entry].place(x=x_entry, y=y_entry, width=50, height=23)
+
         else:
             components[entry].place(x=x_entry, y=y_entry, width=30, height=23)
-        components[label_var].place(x=x_label, y=y_label)
 
+        if label_var != '':
+            components[label_var].place(x=x_label, y=y_label)
 
     be = ['', '1', '2', '3', '4']
     components['be1'] = tk.Label(parent.window, text='模擬器:')
     components['bet_emulator'] = ttk.Combobox(parent.window, value=be, width=8, height=5, state='readonly')
     components['bet_emulator'].current(1)
-    components['be1'].place(x=500, y=400)  # 示例位置
-    components['bet_emulator'].place(x=600, y=400)  # 示例位置
+
+    parent.em_data = json_utils.read_json(os.path.join(parent.data_path, "data"))  # 模擬器相關數據
+
+    eo = parent.em_data["Emulator_options_cn"]  # 選擇語言
+
+    parent.select_player = ttk.Combobox(parent.window, value=eo, width=5, height=5, state='readonly')
+    parent.select_player.current(parent.em_data['emulator_current'])
+
+    parent.adb_path = player.find_dir(parent.select_player.get())
+    os.chdir(parent.adb_path)
+
+    parent.select_player.bind("<<ComboboxSelected>>", parent.updata_player)
+
+    components['be1'].place(x=228, y=70)  # 示例位置
+    parent.select_player.place(x=275, y=70)
+    components['bet_emulator'].place(x=338, y=70, width=40)  # 示例位置
 
     button_commands = {
         '新增任務': ['add_task', 548, 10],
