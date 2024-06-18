@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from modules import table, json_utils
+from modules import task, json_utils
 import os
 from src import player
 

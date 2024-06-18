@@ -2,7 +2,7 @@ import os
 from src import player
 import tkinter as tk, tkinter.ttk as ttk
 from adbutils import adb
-from modules import json_utils, table
+from modules import json_utils, task
 from modules.ui_components import create_ui_components
 from modules.db_utils import MSSQL, read_txt
 
