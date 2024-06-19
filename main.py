@@ -19,7 +19,7 @@ class Emulate:
         self.window.resizable(0, 0)                                                 # 固定視窗大小
         self.window.title('Emulator-Bet')                                           # 視窗名稱
 
-        self.emulators = []
+        self.emulators = []                                                         # 模擬器列表預設值
 
         self.load_data()
 
