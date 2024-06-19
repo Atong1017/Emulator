@@ -21,21 +21,28 @@ class Emulate:
 
         self.emulators = []                                                         # 模擬器列表預設值
 
-        self.load_data()
+        self.load_data()                                                            # 讀取data參數
 
-        # task
+        # 所有ui組件
         self.cuc = create_ui_components(self)
+        self.components = self.cuc[0]
+        self.em_data = self.cuc[1]                                                  # 模擬器選項參數
 
+    # 讀取data參數
     def load_data(self):
-        login_info = read_txt(self.data_path + '\\login_info')
-        self.sql_server = MSSQL(login_info)
+        login_info = read_txt(self.data_path + '\\login_info')                      # 登入的所有資訊
+        # 會員參數
         account_info = read_txt(self.data_path + '\\account')
+
         self.account_name = account_info[0].strip()
         self.account_int = account_info[1].strip()
         self.account = account_info[2:]
 
+        self.sql_server = MSSQL(login_info)                                         # 連結mssql
+
+    # 更新模擬器選項
     def updata_player(self, event=None):
-        new_player = self.select_player.get()
+        new_player = self.components["select_player"].get()
         self.adb_path = player.find_dir(new_player)
         os.chdir(self.adb_path)
 

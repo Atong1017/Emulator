@@ -74,16 +74,16 @@ def create_ui_components(parent):
 
     eo = parent.em_data["Emulator_options_cn"]  # 選擇語言
 
-    parent.select_player = ttk.Combobox(parent.window, value=eo, width=5, height=5, state='readonly')
-    parent.select_player.current(parent.em_data['emulator_current'])
+    components['select_player'] = ttk.Combobox(parent.window, value=eo, width=5, height=5, state='readonly')
+    components['select_player'].current(parent.em_data['emulator_current'])
 
-    parent.adb_path = player.find_dir(parent.select_player.get())
+    parent.adb_path = player.find_dir(components['select_player'].get())
     os.chdir(parent.adb_path)
 
-    parent.select_player.bind("<<ComboboxSelected>>", parent.updata_player)
+    components['select_player'].bind("<<ComboboxSelected>>", parent.updata_player)
 
     components['be1'].place(x=228, y=70)  # 示例位置
-    parent.select_player.place(x=275, y=70)
+    components['select_player'].place(x=275, y=70)
     components['bet_emulator'].place(x=338, y=70, width=40)  # 示例位置
 
     button_commands = {
@@ -97,7 +97,7 @@ def create_ui_components(parent):
 
     for button_name, command_name in button_commands.items():
         components[button_name] = tk.Button(parent.window, text=button_name.capitalize(),
-                                            command=lambda cmd=command_name[0]: getattr(table, cmd)(parent))
+                                            command=lambda cmd=command_name[0]: getattr(task, cmd)(parent))
         components[button_name].place(x=command_name[1], y=command_name[2])  # 示例位置
 
-    return components, parent.select_player
+    return components, parent.em_data
