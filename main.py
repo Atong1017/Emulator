@@ -40,11 +40,12 @@ class Emulate:
 
         self.sql_server = MSSQL(login_info)                                         # 連結mssql
 
-    # 更新模擬器選項
+    # 更新json模擬器選項值
     def updata_player(self, event=None):
         new_player = self.components["select_player"].get()
-        self.adb_path = player.find_dir(new_player)
-        os.chdir(self.adb_path)
+        self.adb_path = player.find_dir(new_player)                                 # adb.exe資料夾
+        print(self.adb_path)
+        os.chdir(self.adb_path)                                                     # 改變當前工作目錄到adb資料夾
 
         self.emulators = sorted(adb.device_list(), key=lambda d: d.serial)
 

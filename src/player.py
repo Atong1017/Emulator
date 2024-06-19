@@ -1,5 +1,6 @@
 import os
 from adbutils import adb
+from tkinter import filedialog
 
 
 def find_dir(playname="nox", possible_dirs=None):
@@ -23,17 +24,22 @@ def find_dir(playname="nox", possible_dirs=None):
             player_folders = ["Nox\\bin"]
         elif playname.lower() in "ldplayer, 雷電, 雷电":
             player_folders = ["LDPlayer\\LDPlayer9"]
+        else:
+            player_folders = None
 
-        # Search catalog
-        for base_dir in possible_dirs:
-            for folder in player_folders:
-                search_path = os.path.join(base_dir, folder)
-                if os.path.exists(search_path):
+        if player_folders is None:
+            custom_folder = filedialog.askdirectory()
+            return custom_folder
+        else:
+            # Search catalog
+            for base_dir in possible_dirs:
+                for folder in player_folders:
+                    search_path = os.path.join(base_dir, folder)
+                    if os.path.exists(search_path):
 
-                    return search_path
+                        return search_path
 
-        return None
-
+            return None
     else:
 
         return possible_dirs
