@@ -8,28 +8,25 @@ from src import player
 def create_ui_components(parent):
     components = {}
 
-    mt = ['歷史筆數', '自訂組數', 'Top', '號碼-+', '交集']
-    components['bet_type'] = ttk.Combobox(parent.window, value=mt, width=8, state='readonly')
-    components['bet_type'].current(0)
+    btlist = ['歷史筆數', '自訂組數', 'Top', '號碼-+', '交集']  # 選單列表
+    components['bet_type'] = ttk.Combobox(parent.window, value=btlist, width=8, state='readonly')  # 下拉選單
+    components['bet_type'].current(0)  # 設定預設值
     components['bet_type'].place(x=10, y=10)  # 示例位置
 
-    components['up_var'] = tk.IntVar()
-    components['up_checkbutton'] = tk.Checkbutton(parent.window, text='上升', variable=components['up_var'], onvalue=1, offvalue=0)
-    components['up_var'].set(1)
-    components['up_checkbutton'].place(x=90, y=10)  # 示例位置
+    # 確認表單列表
+    checks = [
+        ('上升', 'up_check_var', 'up_checkbutton', 1, 90, 10),
+        ('X2', 'x2_var', 'x2_checkbutton', 0, 138, 10)
+    ]
+    for name, var, button, value, x, y in checks:
+        components[var] = tk.IntVar()
+        components[button] = tk.Checkbutton(parent.window, text=name, variable=components[var], onvalue=1, offvalue=0)  # 建立勾選
+        components[var].set(value)  # 預設值:會員內容
+        components[button].place(x=x, y=y)  # 示例位置
 
-    components['bet_self'] = tk.Entry(parent.window)
-    components['bs'] = tk.Label(parent.window, text='自訂組數:')
-    components['bet_self'].insert(0, parent.account[1].strip())
-    components['bet_self'].place(x=238, y=10, width=120, height=23)  # 示例位置
-    components['bs'].place(x=180, y=10)  # 示例位置
-
-    components['x2_var'] = tk.IntVar()
-    components['c1'] = tk.Checkbutton(parent.window, text='X2', variable=components['x2_var'], onvalue=1, offvalue=0)
-    components['x2_var'].set(parent.account[5])
-    components['c1'].place(x=138, y=10)  # 示例位置
-
+    # 輸入、說明表單列表
     entries_labels = [
+        ('bet_self', parent.account[1].strip(), 'bs', '自訂組數:', 238, 10, 180, 10),
         ('c_error', '3', 'crc', '連錯換單:', 418, 10, 358, 10),
         ('s_error', '2', 'src', '二次換單:', 418, 40, 358, 40),
         ('profit', '20', 'pro_p', '%', 478, 10, 508, 10),
@@ -38,7 +35,7 @@ def create_ui_components(parent):
         ('bet_count', '5', 'bc', '下單組數(-+):', 192, 40, 110, 40),
         ('bet_time', '2', 'bt', '次後不再下注', 232, 40, 268, 40),
         ('start_amount', '10000', 'sa', '起始金額:', 72, 70, 10, 70),
-        ('chips', '0.1', 'cp', '每單籌碼:', 182, 70, 120, 70),
+        ('chips', '0.1', 'cp', '每單籌碼:', 182, 70, 123, 70),
         ('changerank', '1', 'cr', '更新排名:', 462, 70, 400, 70),
         ('hsrank', '100', '', '', 512, 70, 0, 0),
         ('hs_deduct', '11', 'hsd', '內無則扣除:', 10, 100, 40, 100),
@@ -82,9 +79,9 @@ def create_ui_components(parent):
 
     components['select_player'].bind("<<ComboboxSelected>>", parent.updata_player)
 
-    components['be1'].place(x=228, y=70)  # 示例位置
-    components['select_player'].place(x=275, y=70)
-    components['bet_emulator'].place(x=338, y=70, width=40)  # 示例位置
+    components['be1'].place(x=233, y=70)  # 示例位置
+    components['select_player'].place(x=278, y=70)
+    components['bet_emulator'].place(x=341, y=70, width=40)  # 示例位置
 
     button_commands = {
         '新增任務': ['add_task', 548, 10],
