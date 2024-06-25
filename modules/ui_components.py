@@ -8,10 +8,25 @@ from src import player
 def create_ui_components(parent):
     components = {}
 
-    btlist = ['歷史筆數', '自訂組數', 'Top', '號碼-+', '交集']  # 選單列表
-    components['bet_type'] = ttk.Combobox(parent.window, value=btlist, width=8, state='readonly')  # 下拉選單
-    components['bet_type'].current(0)  # 設定預設值
-    components['bet_type'].place(x=10, y=10)  # 示例位置
+    parent.em_data = json_utils.read_json(os.path.join(parent.data_path, "data"))  # 模擬器相關數據
+    eo = parent.em_data["Emulator_options_cn"]  # 選擇語言
+
+    # 下拉選單列表
+    comboboxs = [
+        (['歷史筆數', '自訂組數', 'Top', '號碼-+', '交集'], 'bet_type', 'readonly', 0, 8, 5, 10, 10),
+        (eo, 'select_player', 'readonly', parent.em_data['emulator_current'], 5, 5, 278, 70),
+        (['', '1', '2', '3', '4'], 'bet_emulator', None, 1, 2, 5, 341, 70)
+    ]
+    for combo, box_name, state, current, box_width, box_height, box_x, box_y in comboboxs:
+        components[box_name] = ttk.Combobox(parent.window, value=combo, width=box_width, height=box_height, state=state)
+        components[box_name].current(current)
+        components[box_name].place(x=box_x, y=box_y)
+
+    #
+    parent.adb_path = player.find_dir(components['select_player'].get())
+    os.chdir(parent.adb_path)
+
+    components['select_player'].bind("<<ComboboxSelected>>", parent.updata_player)
 
     # 確認表單列表
     checks = [
@@ -23,6 +38,8 @@ def create_ui_components(parent):
         components[button] = tk.Checkbutton(parent.window, text=name, variable=components[var], onvalue=1, offvalue=0)  # 建立勾選
         components[var].set(value)  # 預設值:會員內容
         components[button].place(x=x, y=y)  # 示例位置
+
+    components['be1'] = tk.Label(parent.window, text='模擬器:')
 
     # 輸入、說明表單列表
     entries_labels = [
@@ -55,33 +72,10 @@ def create_ui_components(parent):
             components[entry].place(x=x_entry, y=y_entry, width=120, height=23)
         elif entry in ['start_amount', 'chips']:
             components[entry].place(x=x_entry, y=y_entry, width=50, height=23)
-
         else:
             components[entry].place(x=x_entry, y=y_entry, width=30, height=23)
-
         if label_var != '':
             components[label_var].place(x=x_label, y=y_label)
-
-    be = ['', '1', '2', '3', '4']
-    components['be1'] = tk.Label(parent.window, text='模擬器:')
-    components['bet_emulator'] = ttk.Combobox(parent.window, value=be, width=8, height=5, state='readonly')
-    components['bet_emulator'].current(1)
-
-    parent.em_data = json_utils.read_json(os.path.join(parent.data_path, "data"))  # 模擬器相關數據
-
-    eo = parent.em_data["Emulator_options_cn"]  # 選擇語言
-
-    components['select_player'] = ttk.Combobox(parent.window, value=eo, width=5, height=5, state='readonly')
-    components['select_player'].current(parent.em_data['emulator_current'])
-    #
-    parent.adb_path = player.find_dir(components['select_player'].get())
-    os.chdir(parent.adb_path)
-
-    components['select_player'].bind("<<ComboboxSelected>>", parent.updata_player)
-
-    components['be1'].place(x=233, y=70)  # 示例位置
-    components['select_player'].place(x=278, y=70)
-    components['bet_emulator'].place(x=341, y=70, width=40)  # 示例位置
 
     button_commands = {
         '新增任務': ['add_task', 548, 10],
